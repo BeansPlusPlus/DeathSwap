@@ -1,0 +1,10 @@
+main: beansplusplus.deathswap.DeathSwapPlugin
+name: DeathSwapPlugin
+version: 1
+api-version: 1.19
+description: >
+  Deathswap game
+commands:
+  start:
+    description: >
+      Begin game

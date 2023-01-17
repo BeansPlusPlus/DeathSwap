@@ -1,0 +1,13 @@
+team1:
+  type: player_list
+some_number:
+  type: double
+  default: 8
+  min: 0
+some_enum:
+  type: enum
+  options:
+    - o1
+    - o2
+    - o3
+    - o4

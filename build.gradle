@@ -1,0 +1,32 @@
+plugins {
+    id "java"
+}
+
+group 'beansplusplus'
+version '1.0'
+
+java {
+    sourceCompatibility = 16
+    targetCompatibility = 16
+}
+
+configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
+
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven {
+        url "https://maven.pkg.github.com/BeansPlusPlus/GameConfigPlugin"
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.13'
+    compileOnly 'beansplusplus.gameconfig:gameconfigplugin:1.0-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+}
