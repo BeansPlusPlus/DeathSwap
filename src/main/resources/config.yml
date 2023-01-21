@@ -1,13 +1,18 @@
-team1:
-  type: player_list
-some_number:
-  type: double
-  default: 8
+points_to_win:
+  type: int
+  default: 5
+  min: 1
+swap_immunity_seconds:
+  type: int
+  default: 0
   min: 0
-some_enum:
-  type: enum
-  options:
-    - o1
-    - o2
-    - o3
-    - o4
+round_time_minutes:
+  type: int
+  default: 5
+  min: 1
+unique_deaths:
+  type: boolean
+  default: true
+hunger:
+  type: boolean
+  default: false

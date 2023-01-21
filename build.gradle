@@ -2,7 +2,7 @@ plugins {
     id "java"
 }
 
-group 'beansplusplus'
+group 'beansplusplus.deathswap'
 version '1.0'
 
 java {
@@ -29,4 +29,7 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.13'
     compileOnly 'beansplusplus.gameconfig:gameconfigplugin:1.0-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }

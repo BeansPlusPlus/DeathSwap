@@ -35,7 +35,9 @@ public class DeathSwapPlugin extends JavaPlugin implements CommandExecutor, List
   public void onPlayerJoin(PlayerJoinEvent e) {
     Player player = e.getPlayer();
 
-    player.sendMessage(ChatColor.BLUE + "Welcome to <Template game>");
+    player.sendMessage(ChatColor.BLUE + "Welcome to Deathswap");
+    player.sendMessage(ChatColor.GREEN + "/config" + ChatColor.WHITE + " to configure game setup");
+    player.sendMessage(ChatColor.GREEN + "/start" + ChatColor.WHITE + " to begin");
   }
 
 }
