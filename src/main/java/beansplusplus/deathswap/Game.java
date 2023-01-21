@@ -176,16 +176,21 @@ public class Game implements Listener {
 
     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
     List<Player> shuffledPlayers = new ArrayList<>(players);
+    List<Location> shuffledPlayerLocationsPreTeleport = new ArrayList<>();
 
     while (!isShuffled(players, shuffledPlayers)) {
       Collections.shuffle(shuffledPlayers);
+    }
+    
+    for (Player player : shuffledPlayers) {
+      shuffledPlayerLocationsPreTeleport.add(player.getLocation());
     }
 
     for (int i = 0; i < players.size(); i++) {
       teleportedBy.put(players.get(i).getName(), shuffledPlayers.get(i).getName());
 
       Player player = players.get(i);
-      Location location = shuffledPlayers.get(i).getLocation();
+      Location location = shuffledPlayerLocationsPreTeleport.get(i);
 
       safeTeleport(player, location);
       player.playSound(location, Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
