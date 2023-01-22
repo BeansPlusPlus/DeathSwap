@@ -51,6 +51,7 @@ public class Game implements Listener {
 
     for (World world : Bukkit.getWorlds()) {
       world.setGameRule(GameRule.KEEP_INVENTORY, true);
+      world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
       world.setPVP(false);
     }
 
