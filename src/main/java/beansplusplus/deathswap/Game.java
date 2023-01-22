@@ -72,7 +72,7 @@ public class Game implements Listener {
     immunityTimer = 0;
     immunityTime = GameConfiguration.getConfig().getValue("swap_immunity_seconds");
     uniqueDeaths = GameConfiguration.getConfig().getValue("unique_deaths");
-    hunger = GameConfiguration.getConfig().getValue("unique_deaths");
+    hunger = GameConfiguration.getConfig().getValue("hunger");
 
     for (Player player : Bukkit.getOnlinePlayers()) {
       clearAllEffects(player);
