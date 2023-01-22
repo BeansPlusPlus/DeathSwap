@@ -9,7 +9,7 @@ swap_immunity_seconds:
 round_time_minutes:
   type: double
   default: 5
-  min: 1
+  min: 0.5
 unique_deaths:
   type: boolean
   default: true
