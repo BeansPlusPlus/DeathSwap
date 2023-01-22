@@ -16,3 +16,7 @@ unique_deaths:
 hunger:
   type: boolean
   default: false
+grace_period_minutes:
+  type: int
+  min: 0
+  default: 0

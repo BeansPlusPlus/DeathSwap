@@ -1,8 +1,6 @@
 package beansplusplus.deathswap;
 
 import beansplusplus.gameconfig.GameConfiguration;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -68,7 +66,9 @@ public class Game implements Listener {
 
     pointsToWin = GameConfiguration.getConfig().getValue("points_to_win");
     swapTime = ((int) GameConfiguration.getConfig().getValue("round_time_minutes")) * 60;
-    timeTilSwap = swapTime;
+    int gracePeriod = ((int) GameConfiguration.getConfig().getValue("grace_period_minutes")) * 60;
+
+    timeTilSwap = swapTime + gracePeriod;
     immunityTimer = 0;
     immunityTime = GameConfiguration.getConfig().getValue("swap_immunity_seconds");
     uniqueDeaths = GameConfiguration.getConfig().getValue("unique_deaths");
