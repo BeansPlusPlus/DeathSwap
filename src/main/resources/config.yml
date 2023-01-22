@@ -3,11 +3,11 @@ points_to_win:
   default: 5
   min: 1
 swap_immunity_seconds:
-  type: int
+  type: double
   default: 0
   min: 0
 round_time_minutes:
-  type: int
+  type: double
   default: 5
   min: 1
 unique_deaths:
@@ -17,6 +17,10 @@ hunger:
   type: boolean
   default: false
 grace_period_minutes:
-  type: int
+  type: double
+  min: 0
+  default: 0
+swap_points_period_minutes:
+  type: double
   min: 0
   default: 0

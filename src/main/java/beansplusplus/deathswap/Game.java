@@ -30,9 +30,10 @@ public class Game implements Listener {
 
   private int swapTime;
   private int timeTilSwap;
-  private int immunityTimer;
   private int immunityTime;
+  private boolean isImmune;
   private int pointsToWin;
+  private int swapPointsPeriod;
   private boolean uniqueDeaths;
   private boolean hunger;
 
@@ -65,14 +66,15 @@ public class Game implements Listener {
     float angleDif = ((float) Math.PI * 2.0f) / (float) Bukkit.getOnlinePlayers().size();
 
     pointsToWin = GameConfiguration.getConfig().getValue("points_to_win");
-    swapTime = ((int) GameConfiguration.getConfig().getValue("round_time_minutes")) * 60;
-    int gracePeriod = ((int) GameConfiguration.getConfig().getValue("grace_period_minutes")) * 60;
+    swapTime = (int) ((double) GameConfiguration.getConfig().getValue("round_time_minutes") * 60.0);
+    int gracePeriod = (int) ((double) GameConfiguration.getConfig().getValue("grace_period_minutes") * 60.0);
 
     timeTilSwap = swapTime + gracePeriod;
-    immunityTimer = 0;
-    immunityTime = GameConfiguration.getConfig().getValue("swap_immunity_seconds");
+    isImmune = false;
+    immunityTime = (int) ((double) GameConfiguration.getConfig().getValue("swap_immunity_seconds") * 20.0);
     uniqueDeaths = GameConfiguration.getConfig().getValue("unique_deaths");
     hunger = GameConfiguration.getConfig().getValue("hunger");
+    swapPointsPeriod = (int) ((double) GameConfiguration.getConfig().getValue("swap_points_period_minutes") * 60.0);
 
     for (Player player : Bukkit.getOnlinePlayers()) {
       clearAllEffects(player);
@@ -172,7 +174,6 @@ public class Game implements Listener {
    */
   private void swapPlayers() {
     timeTilSwap = swapTime;
-    immunityTimer = immunityTime;
 
     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
     List<Player> shuffledPlayers = new ArrayList<>(players);
@@ -181,7 +182,7 @@ public class Game implements Listener {
     while (!isShuffled(players, shuffledPlayers)) {
       Collections.shuffle(shuffledPlayers);
     }
-    
+
     for (Player player : shuffledPlayers) {
       shuffledPlayerLocationsPreTeleport.add(player.getLocation());
     }
@@ -201,6 +202,13 @@ public class Game implements Listener {
     for (int i = 0; i < players.size(); i++) {
       shuffledPlayers.get(i).sendMessage(ChatColor.GREEN + players.get(i).getName() + ChatColor.BLUE + " teleported to you");
     }
+
+    if (immunityTime <= 0) return;
+
+    isImmune = true;
+    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+      isImmune = false;
+    }, immunityTime);
   }
 
   private boolean isShuffled(List<?> l1, List<?> l2) {
@@ -233,11 +241,16 @@ public class Game implements Listener {
    */
   public void runTimer() {
     timeTilSwap--;
-    if (immunityTimer > 0) immunityTimer--;
 
     if (timeTilSwap == 0) {
       swapPlayers();
     } else {
+      if (timeTilSwap + swapPointsPeriod == swapTime) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+          player.sendMessage(ChatColor.YELLOW + "Swap period over. You will not get any points for deaths until the next swap.");
+        }
+      }
+
       if (timeTilSwap <= 5 || timeTilSwap == 30) {
         for (Player player : Bukkit.getOnlinePlayers()) {
           player.sendMessage(ChatColor.YELLOW + "Swapping in " + timeTilSwap + "s...");
@@ -281,6 +294,8 @@ public class Game implements Listener {
 
     String causeStr = getDeathCause(player.getLastDamageCause());
 
+    if (swapPointsPeriod > 0 && timeTilSwap + swapPointsPeriod < swapTime) return;
+
     if (uniqueDeaths && deaths.containsKey(killer) && deaths.get(killer).contains(causeStr)) {
       Player killerPlayer;
       if ((killerPlayer = Bukkit.getPlayer(killer)) != null) {
@@ -317,7 +332,7 @@ public class Game implements Listener {
   @EventHandler
   public void onEntityDamage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player) {
-      if (immunityTimer > 0) e.setCancelled(true);
+      if (isImmune) e.setCancelled(true);
     }
   }
 
