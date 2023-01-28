@@ -18,15 +18,26 @@ public class DeathSwapPlugin extends JavaPlugin implements CommandExecutor, List
     ConfigLoader.loadFromInput(getResource("config.yml"));
     getServer().getPluginManager().registerEvents(this, this);
     getCommand("start").setExecutor(this);
+    getCommand("deaths").setExecutor(this);
   }
 
   @Override
   public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    if (game != null) {
-      game.end();
+    if (!(sender instanceof Player)) sender.sendMessage("Need to be a player to run this command.");
+
+    if (label.equalsIgnoreCase("start")) {
+      if (game != null) {
+        game.end();
+      }
+      game = new Game(this);
+      game.start();
+    } else if (label.equalsIgnoreCase("deaths")) {
+      if (game == null) {
+        sender.sendMessage(ChatColor.RED + "Game not started.");
+      } else {
+        game.showCompletedDeaths((Player) sender);
+      }
     }
-    game = new Game(this);
-    game.start();
 
     return true;
   }
@@ -39,5 +50,4 @@ public class DeathSwapPlugin extends JavaPlugin implements CommandExecutor, List
     player.sendMessage(ChatColor.GREEN + "/config" + ChatColor.WHITE + " to configure game setup");
     player.sendMessage(ChatColor.GREEN + "/start" + ChatColor.WHITE + " to begin");
   }
-
 }

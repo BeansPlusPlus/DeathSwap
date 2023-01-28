@@ -23,4 +23,7 @@ grace_period_minutes:
 swap_points_period_minutes:
   type: double
   min: 0
-  default: 0
+  default: 1
+always_show_timer:
+  type: boolean
+  default: true

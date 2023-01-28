@@ -8,3 +8,6 @@ commands:
   start:
     description: >
       Begin game
+  deaths:
+    description: >
+      Show deaths you have already done
