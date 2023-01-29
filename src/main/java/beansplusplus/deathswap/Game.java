@@ -66,7 +66,6 @@ public class Game implements Listener {
     for (World world : Bukkit.getWorlds()) {
       world.setGameRule(GameRule.KEEP_INVENTORY, true);
       world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-      world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
       world.setPVP(false);
     }
 
@@ -137,6 +136,8 @@ public class Game implements Listener {
     scores.put(killer, scores.getOrDefault(killer, 0) + 1);
 
     notifyOfDeath(killer, player.getName(), causeStr);
+
+    e.setDeathMessage(null);
 
     if (checkForWinner(killer)) return;
 
