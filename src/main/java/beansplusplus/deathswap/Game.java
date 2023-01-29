@@ -348,7 +348,7 @@ public class Game implements Listener {
       if (p.getName().equals(killer)) continue;
 
       p.sendMessage(ChatColor.GREEN + killer + ChatColor.BLUE + " killed " + ChatColor.GREEN + killed +
-          ChatColor.BLUE + " with " + ChatColor.GREEN + causeStr + ChatColor.BLUE + "!");
+          ChatColor.BLUE + " with " + ChatColor.GREEN + simpleDeathName(causeStr));
     }
 
     if (killerPlayer != null) {
