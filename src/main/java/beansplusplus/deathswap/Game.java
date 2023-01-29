@@ -5,6 +5,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -134,7 +135,7 @@ public class Game implements Listener {
 
     scores.put(killer, scores.getOrDefault(killer, 0) + 1);
 
-    notifyOfDeath(killer);
+    notifyOfDeath(killer, player.getName(), causeStr);
 
     if (checkForWinner(killer)) return;
 
@@ -226,7 +227,7 @@ public class Game implements Listener {
   private void swapPlayers() {
     timeTilSwap = swapTime;
 
-    List<Entity> entities = despawnableEntities();
+    List<LivingEntity> entities = despawnableEntities();
 
     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
     List<Player> shuffledPlayers = new ArrayList<>(players);
@@ -252,6 +253,10 @@ public class Game implements Listener {
       player.sendMessage(ChatColor.BLUE + "You teleported to " + ChatColor.GREEN + shuffledPlayers.get(i).getName());
     }
 
+    for (LivingEntity e : entities) {
+      e.setRemoveWhenFarAway(true);
+    }
+
     for (int i = 0; i < players.size(); i++) {
       shuffledPlayers.get(i).sendMessage(ChatColor.GREEN + players.get(i).getName() + ChatColor.BLUE + " teleported to you");
     }
@@ -264,15 +269,19 @@ public class Game implements Listener {
     }, immunityTime);
   }
 
-  private List<Entity> despawnableEntities() {
-    List<Entity> entities = new ArrayList<>();
+  private List<LivingEntity> despawnableEntities() {
+    List<LivingEntity> entities = new ArrayList<>();
 
     for (Player player : Bukkit.getOnlinePlayers()) {
       for (Entity entity : player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 64, 64, 64)) {
-        if (entity.getCustomName() == null) {
-          entity.setCustomName("Please don't despawn");
-          entities.add(entity);
-        }
+        if (!(entity instanceof LivingEntity)) continue;
+
+        LivingEntity livingEntity = (LivingEntity) entity;
+
+        if (!livingEntity.getRemoveWhenFarAway()) continue;
+
+        livingEntity.setRemoveWhenFarAway(false);
+        entities.add(livingEntity);
       }
     }
 
@@ -330,13 +339,14 @@ public class Game implements Listener {
   }
 
 
-  private void notifyOfDeath(String killer) {
+  private void notifyOfDeath(String killer, String killed, String causeStr) {
     Player killerPlayer = Bukkit.getPlayer(killer);
 
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (p.getName().equals(killer)) continue;
 
-      p.sendMessage(ChatColor.GREEN + killer + ChatColor.BLUE + " scored a point!");
+      p.sendMessage(ChatColor.GREEN + killer + ChatColor.BLUE + " killed " + ChatColor.GREEN + killed +
+          ChatColor.BLUE + " with " + ChatColor.GREEN + causeStr + ChatColor.BLUE + "!");
     }
 
     if (killerPlayer != null) {
