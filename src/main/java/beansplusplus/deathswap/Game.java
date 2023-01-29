@@ -226,6 +226,8 @@ public class Game implements Listener {
   private void swapPlayers() {
     timeTilSwap = swapTime;
 
+    List<Entity> entities = despawnableEntities();
+
     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
     List<Player> shuffledPlayers = new ArrayList<>(players);
     List<Location> shuffledPlayerLocationsPreTeleport = new ArrayList<>();
@@ -260,6 +262,21 @@ public class Game implements Listener {
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
       isImmune = false;
     }, immunityTime);
+  }
+
+  private List<Entity> despawnableEntities() {
+    List<Entity> entities = new ArrayList<>();
+
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      for (Entity entity : player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 64, 64, 64)) {
+        if (entity.getCustomName() == null) {
+          entity.setCustomName("Please don't despawn");
+          entities.add(entity);
+        }
+      }
+    }
+
+    return entities;
   }
 
   private Location getFarLocation(int x, int z, int dist, float angle) {
