@@ -329,6 +329,7 @@ public class Game implements Listener {
   private void safeTeleport(Player player, Location location) {
     player.teleport(location);
     player.setVelocity(new org.bukkit.util.Vector(0, 0, 0));
+    player.setFallDistance(0);
   }
 
   private boolean isShuffled(List<?> l1, List<?> l2) {
