@@ -253,9 +253,11 @@ public class Game implements Listener {
       player.sendMessage(ChatColor.BLUE + "You teleported to " + ChatColor.GREEN + shuffledPlayers.get(i).getName());
     }
 
-//    for (LivingEntity e : entities) {
-//      e.setRemoveWhenFarAway(true);
-//    }
+    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+      for (LivingEntity e : entities) {
+        e.setRemoveWhenFarAway(true);
+      }
+    }, 20);
 
     for (int i = 0; i < players.size(); i++) {
       shuffledPlayers.get(i).sendMessage(ChatColor.GREEN + players.get(i).getName() + ChatColor.BLUE + " teleported to you");
