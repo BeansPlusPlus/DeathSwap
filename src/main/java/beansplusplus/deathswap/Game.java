@@ -66,6 +66,7 @@ public class Game implements Listener {
     for (World world : Bukkit.getWorlds()) {
       world.setGameRule(GameRule.KEEP_INVENTORY, true);
       world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+      world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
       world.setPVP(false);
     }
 
@@ -340,7 +341,6 @@ public class Game implements Listener {
     return true;
   }
 
-
   private void notifyOfDeath(String killer, String killed, String causeStr) {
     Player killerPlayer = Bukkit.getPlayer(killer);
 
@@ -352,7 +352,8 @@ public class Game implements Listener {
     }
 
     if (killerPlayer != null) {
-      killerPlayer.sendMessage(ChatColor.GOLD + "You have scored a point!");
+      killerPlayer.sendMessage(ChatColor.BLUE + "You have scored a point for killing " + ChatColor.GREEN +
+          killed + ChatColor.BLUE + " with " + ChatColor.GREEN + simpleDeathName(causeStr));
       if (uniqueDeaths && scores.get(killer) < pointsToWin) {
         killerPlayer.sendMessage(ChatColor.WHITE + "Use " + ChatColor.RED + "/deaths" + ChatColor.WHITE + " to see what deaths you cannot repeat");
       }
