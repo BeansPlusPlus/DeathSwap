@@ -1,6 +1,8 @@
 package beansplusplus.deathswap;
 
-import beansplusplus.gameconfig.GameConfiguration;
+import beansplusplus.beansgameplugin.Game;
+import beansplusplus.beansgameplugin.GameConfiguration;
+import beansplusplus.beansgameplugin.GameState;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -25,8 +27,9 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
 
-public class Game implements Listener {
+public class DeathSwapGame implements Listener, Game {
   private Plugin plugin;
+  private GameState state;
 
   private int swapTime;
   private int timeTilSwap;
@@ -39,6 +42,7 @@ public class Game implements Listener {
   private boolean hunger;
   private boolean showTimerAlways;
 
+
   private Random random = new Random();
 
   private Map<String, Integer> scores = new HashMap<>();
@@ -49,17 +53,18 @@ public class Game implements Listener {
 
   private float TELEPORT_BORDER = 1500;
 
-  public Game(DeathSwapPlugin plugin) {
+  public DeathSwapGame(DeathSwapPlugin plugin, GameConfiguration config, GameState state) {
     this.plugin = plugin;
+    this.state = state;
 
-    pointsToWin = GameConfiguration.getConfig().getValue("points_to_win");
-    swapTime = (int) ((double) GameConfiguration.getConfig().getValue("round_time_minutes") * 60.0);
-    gracePeriod = (int) ((double) GameConfiguration.getConfig().getValue("grace_period_minutes") * 60.0);
-    immunityTime = (int) ((double) GameConfiguration.getConfig().getValue("swap_immunity_seconds") * 20.0);
-    uniqueDeaths = GameConfiguration.getConfig().getValue("unique_deaths");
-    hunger = GameConfiguration.getConfig().getValue("hunger");
-    swapPointsPeriod = (int) ((double) GameConfiguration.getConfig().getValue("swap_points_period_minutes") * 60.0);
-    showTimerAlways = GameConfiguration.getConfig().getValue("always_show_timer");
+    pointsToWin = config.getValue("points_to_win");
+    swapTime = (int) ((double) config.getValue("round_time_minutes") * 60.0);
+    gracePeriod = (int) ((double) config.getValue("grace_period_minutes") * 60.0);
+    immunityTime = (int) ((double) config.getValue("swap_immunity_seconds") * 20.0);
+    uniqueDeaths = config.getValue("unique_deaths");
+    hunger = config.getValue("hunger");
+    swapPointsPeriod = (int) ((double) config.getValue("swap_points_period_minutes") * 60.0);
+    showTimerAlways = config.getValue("always_show_timer");
   }
 
   public void start() {
@@ -90,7 +95,8 @@ public class Game implements Listener {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::runTimer, 20, 20);
   }
 
-  public void end() {
+  @Override
+  public void cleanUp() {
     HandlerList.unregisterAll(this);
     Bukkit.getScheduler().cancelTasks(plugin);
 
@@ -183,6 +189,8 @@ public class Game implements Listener {
   }
 
   private void runTimer() {
+    if (state.isPaused()) return;
+
     timeTilSwap--;
 
     if (timeTilSwap == 0) {
@@ -377,7 +385,7 @@ public class Game implements Listener {
       p.sendMessage(ChatColor.GREEN + killer + ChatColor.BLUE + " has won the game!");
     }
 
-    end();
+    state.stopGame();
 
     return true;
   }

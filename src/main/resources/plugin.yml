@@ -2,12 +2,11 @@ main: beansplusplus.deathswap.DeathSwapPlugin
 name: DeathSwapPlugin
 version: 1
 api-version: 1.19
+depend:
+  - BeansGamePlugin
 description: >
   Deathswap game
 commands:
-  start:
-    description: >
-      Begin game
   deaths:
     description: >
       Show deaths you have already done

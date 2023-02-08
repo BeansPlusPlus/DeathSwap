@@ -17,7 +17,7 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven {
-        url "https://maven.pkg.github.com/BeansPlusPlus/GameConfigPlugin"
+        url "https://maven.pkg.github.com/BeansPlusPlus/BeansGamePlugin"
         credentials {
             username = System.getenv("GITHUB_ACTOR")
             password = System.getenv("GITHUB_TOKEN")
@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.13'
-    compileOnly 'beansplusplus.gameconfig:gameconfigplugin:1.0-SNAPSHOT'
+    compileOnly 'beansplusplus:beansgameplugin:1.0-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
