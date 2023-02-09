@@ -12,18 +12,17 @@ import java.io.InputStream;
 import java.util.List;
 
 public class DeathSwapPlugin extends JavaPlugin implements GameCreator, CommandExecutor {
-  private DeathSwapGame game;
+  private GameState state;
 
   public void onEnable() {
     BeansGamePlugin beansGamePlugin = (BeansGamePlugin) getServer().getPluginManager().getPlugin("BeansGamePlugin");
-    beansGamePlugin.registerGame(this);
+    state = beansGamePlugin.registerGame(this);
     getCommand("deaths").setExecutor(this);
   }
 
   @Override
   public Game createGame(GameConfiguration config, GameState gameState) {
-    game = new DeathSwapGame(this, config, gameState);
-    return game;
+    return new DeathSwapGame(this, config, gameState);
   }
 
   @Override
@@ -38,7 +37,11 @@ public class DeathSwapPlugin extends JavaPlugin implements GameCreator, CommandE
 
   @Override
   public List<String> rulePages() {
-    return List.of("TODO");
+    return List.of(
+        "In death swap, you will swap locations with an opponent every 5 minutes. You need to put yourself into a dangerous position such that they will die when you swap.\n\nThe winner of the game is whoever causes 5 deaths first.",
+        "Each of your points needs to be scored with a unique death cause. You can keep track of the types of deaths you have done with " + ChatColor.RED + "/deaths" + ChatColor.BLACK + ". This feature is optional and can be disabled.",
+        "Points can only be scored within the first minute that you swap with another player. This period can be changed with the " + ChatColor.RED + "swap_points_period_minutes" + ChatColor.BLACK + " setting."
+    );
   }
 
   @Override
@@ -51,10 +54,10 @@ public class DeathSwapPlugin extends JavaPlugin implements GameCreator, CommandE
     if (!(sender instanceof Player)) sender.sendMessage("Need to be a player to run this command.");
 
     if (label.equalsIgnoreCase("deaths")) {
-      if (game == null) {
-        sender.sendMessage(ChatColor.DARK_RED + "Game not started.");
+      if (state.gameStarted()) {
+        ((DeathSwapGame) state.getCurrentGame()).showCompletedDeaths((Player) sender);
       } else {
-        game.showCompletedDeaths((Player) sender);
+        sender.sendMessage(ChatColor.DARK_RED + "Game not started.");
       }
     }
 
